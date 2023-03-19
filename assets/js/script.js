@@ -36,17 +36,37 @@ function renderCurrentWeather(city, weatherData) {
     let date = moment().format("DD/MM/YYYY");
     let tempC = weatherData["main"]["temp"];
     let windKph = weatherData["wind"]["speed"];
+    let humidity = weatherData["main"]["humidity"];
 
+    let iconUrl = `http://openweathermap.org/img/w/${weatherData.weather[0].icon}.png`
+    let iconDescription = weatherData.weather[0].description || weatherData[0].main
+
+    let card = $("<div>")
+    let cardBody = $("<div>")
+
+    let heading = $("<h2>")
+    let tempEl = $("<p>")
+    let windEl = $("<p>")
+
+    let humidityEl = $("<p>")
+
+    card.attr("class", "card");
+
+    cardBody.attr("class", "card-body");
+
+    card.append(cardBody);
+
+    heading.attr("class", "h3 card-title")
+    tempEl.attr("c")
 }
 
 function fetchWeather(location) {
-    //console.log(location);
     let latitude = location.lat;
     let longitude = location.lon;
 
     let city = location.name;
 
-    let queryWeatherURL = `${weatherAPIURL}/data/2.5/forecast?lat=${latitude}&lon${longitude}&units=metric&appid=${weatherAPIkey}`
+    let queryWeatherURL = `${weatherAPIURL}/data/2.5/forecast?lat=${latitude}&lon=${longitude}&units=metric&appid=${weatherAPIkey}`
 
     console.log(queryWeatherURL)
 
@@ -63,9 +83,6 @@ function fetchWeather(location) {
 
 function fetchCoord(search) {
     let queryURL = `${weatherAPIURL}/geo/1.0/direct?q=${search}&limit=5&appid=${weatherAPIkey}`
-    //http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}
-
-    console.log(queryURL)
 
     fetch(queryURL, { method: "GET" })
         .then(function (data) {
@@ -77,6 +94,7 @@ function fetchCoord(search) {
             } else {
                 appendSearchHistory(search)
                 fetchWeather(response[0])
+
             }
         })
 }
