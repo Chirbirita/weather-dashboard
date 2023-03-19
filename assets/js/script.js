@@ -6,6 +6,7 @@ let searchHistory = []
 let searchInput = $("#search-input")
 let searchForm = $("#search-form");
 let searchHistoryContainer = $("#history")
+let todayContainer = $("#today")
 
 function renderSearchHistory() {
     searchHistoryContainer.html("")
@@ -43,6 +44,7 @@ function renderCurrentWeather(city, weatherData) {
 
     let card = $("<div>")
     let cardBody = $("<div>")
+    let weatherIcon = $("<img>")
 
     let heading = $("<h2>")
     let tempEl = $("<p>")
@@ -57,7 +59,24 @@ function renderCurrentWeather(city, weatherData) {
     card.append(cardBody);
 
     heading.attr("class", "h3 card-title")
-    tempEl.attr("c")
+    tempEl.attr("class", 'card-text')
+    windEl.attr("class", "card-text")
+    humidityEl.attr("class", "card-text")
+
+    heading.text(`${city} (${date})`)
+    weatherIcon.attr("src", iconUrl)
+    weatherIcon.attr("alt", iconDescription)
+    heading.append(weatherIcon)
+
+    tempEl.text(`Temp ${tempC} C`)
+    windEl.text(`Wind ${windKph} KPH`)
+
+    humidityEl.text(`Humidity ${humidity} %`)
+    cardBody.append(heading, tempEl, windEl, humidityEl)
+
+    todayContainer.html('')
+    todayContainer.append(card)
+
 }
 
 function fetchWeather(location) {
@@ -68,14 +87,12 @@ function fetchWeather(location) {
 
     let queryWeatherURL = `${weatherAPIURL}/data/2.5/forecast?lat=${latitude}&lon=${longitude}&units=metric&appid=${weatherAPIkey}`
 
-    console.log(queryWeatherURL)
-
-    $.ajax({
-        url: queryWeatherURL,
+    fetch(queryWeatherURL, {
         method: "GET"
-    }).then(function (response) {
+    }).then(response => response.json()
+    ).then(function (response) {
         renderCurrentWeather(city, response.list[0]);
-        //renderForecast(data.list);
+        renderForecast(data.list);
     })
 
 
